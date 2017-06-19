@@ -13,7 +13,9 @@ Run the application.
 mpirun -n <N> --hostfile <hostnames> main <input_file> 
 ```
 N: N° of nodes
+
 hostnames: File with the address of nodes.
+
 input_file: File with the graph data
 
 ## Test Instruction
@@ -26,4 +28,5 @@ Run tests.
 mpirun -n <N> --hostfile <hostnames> checktest
 ```
 N: N° of nodes
+
 hostnames: File with the address of nodes.
