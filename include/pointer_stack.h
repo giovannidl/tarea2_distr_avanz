@@ -20,9 +20,9 @@ PointerStack* stack_init(PointerStack* stack);
 
 void stack_push(PointerStack* stack, int** array_pointer, int* pointer_size);
 
-int* stack_pop(PointerStack* stack);
+void stack_pop(PointerStack* stack, int** array_pointer, int* pointer_size);
 
-int* stack_peek(PointerStack* stack);
+void stack_peek(PointerStack* stack, int** array_pointer, int* pointer_size);
 
 void stack_clear(PointerStack* stack);
 
