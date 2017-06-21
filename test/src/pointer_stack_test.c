@@ -3,17 +3,8 @@
 //
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/pointer_stack.h"
-
-int printIntValidate(char* message, int answer, int correct_answer, int* successful_tests) {
-    printf(message, answer);
-    if(answer == correct_answer)
-        printf(" Correct\n");
-    else {
-        printf(" Wrong\n");
-        *successful_tests = 0;
-    }
-}
+#include "../../include/pointer_stack.h"
+#include "../include/test_tools.h"
 
 void test_stack_init(int* successful_tests) {
     // Initialize an empty stack.
@@ -45,7 +36,7 @@ void test_push_pointer(int* successful_tests) {
     example[1] = 5;
     example[2] = 6;
 
-    stack_push(&stack, &example, &example_size);
+    stack_push(&stack, &example, example_size);
 
     printIntValidate("Stack Size: %i.", stack.size, 1, successful_tests);
     if(stack.top == NULL) {
@@ -88,7 +79,7 @@ void test_peek_stack(int* successful_tests) {
     example[1] = 5;
     example[2] = 6;
 
-    stack_push(&stack, &example, &example_size);
+    stack_push(&stack, &example, example_size);
     stack_peek(&stack, &pop_result, &result_size);
 
     if(pop_result == example)
@@ -142,8 +133,8 @@ void test_push_two_pointers(int* successful_tests) {
     second_example[2] = 13;
     second_example[3] = 14;
 
-    stack_push(&stack, &example, &example_size);
-    stack_push(&stack, &second_example, &second_example_size);
+    stack_push(&stack, &example, example_size);
+    stack_push(&stack, &second_example, second_example_size);
 
     printIntValidate("Stack Size: %i.", stack.size, 2, successful_tests);
     if(stack.top == NULL) {
@@ -195,7 +186,7 @@ void test_push_and_pop(int* successful_tests) {
     example[1] = 5;
     example[2] = 6;
 
-    stack_push(&stack, &example, &example_size);
+    stack_push(&stack, &example, example_size);
     stack_pop(&stack, &pop_result, &result_size);
 
     if(pop_result == example)
@@ -241,8 +232,8 @@ void test_push_and_pop_twice(int* successful_tests) {
     second_example[2] = 13;
     second_example[3] = 14;
 
-    stack_push(&stack, &example, &example_size);
-    stack_push(&stack, &second_example, &second_example_size);
+    stack_push(&stack, &example, example_size);
+    stack_push(&stack, &second_example, second_example_size);
     stack_pop(&stack, &pop_result, &result_size);
     stack_pop(&stack, &pop_second_result, &second_result_size);
 
@@ -310,10 +301,10 @@ void test_alter_push_and_pop(int* successful_tests) {
     third_example[0] = 21;
     third_example[1] = 22;
 
-    stack_push(&stack, &example, &example_size);
-    stack_push(&stack, &second_example, &second_example_size);
+    stack_push(&stack, &example, example_size);
+    stack_push(&stack, &second_example, second_example_size);
     stack_pop(&stack, &pop_result, &result_size);
-    stack_push(&stack, &third_example, &third_example_size);
+    stack_push(&stack, &third_example, third_example_size);
     stack_pop(&stack, &pop_second_result, &second_result_size);
     stack_pop(&stack, &pop_third_result, &third_result_size);
 
@@ -387,8 +378,8 @@ void test_clear_stack(int* successful_tests) {
     second_example[2] = 13;
     second_example[3] = 14;
 
-    stack_push(&stack, &example, &example_size);
-    stack_push(&stack, &second_example, &second_example_size);
+    stack_push(&stack, &example, example_size);
+    stack_push(&stack, &second_example, second_example_size);
     stack_clear(&stack);
 
     printIntValidate("Size of stack: %i.", stack.size, 0, successful_tests);

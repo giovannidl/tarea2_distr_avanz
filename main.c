@@ -3,12 +3,17 @@
 #include <mpi.h>
 #include "include/input_reader.h"
 #include "include/pointer_stack.h"
+#include "include/minor_tools.h"
+
+
 
 int main(int argc, char **argv) {
-    int num_procs, my_id, an_id;
-    int graph_size, graph_costs_length;
+    int num_procs, my_id, i;
+    int graph_size, graph_costs_length, best_cost;
     int* serialized_graph_costs;
     int root_process = 0;
+
+    PointerStack pending_stack;
 
     MPI_Status status;
 
@@ -53,8 +58,23 @@ int main(int argc, char **argv) {
     // Free the serialized_graph_costs because we won't use it anymore
     free(serialized_graph_costs);
 
-    if(my_id == root_process) {
+    // Assign a high value to best_cost
+    best_cost = 5000000;
 
+    if(my_id == root_process) {
+        // Initialize the stack with the started node zero
+        int* start_node = (int*) malloc(sizeof(int));
+        stack_init(&pending_stack);
+        stack_push(&pending_stack, &start_node, 1);
+    }
+
+    if(num_procs == 1) {
+        int* current_road;
+        int current_road_size;
+        while(pending_stack.size > 0) {
+            stack_pop(&pending_stack, &current_road, &current_road_size);
+
+        }
     }
 
     MPI_Finalize();

@@ -3,20 +3,9 @@
 //
 #include <stdio.h>
 #include <mpi.h>
-#include <memory.h>
-#include "pointer_stack_test.h"
-
-int checkArg(char** argv, int argc, char* value) {
-    if(argc < 2)
-        return 0;
-
-    int i;
-    for(i = 1; i < argc; i++)
-        if(!strcmp(argv[i], value))
-            return 1;
-
-    return 0;
-}
+#include "include/pointer_stack_test.h"
+#include "include/minor_tools_test.h"
+#include "include/test_tools.h"
 
 int main(int argc, char **argv) {
     printf("Starting test...\n");
@@ -54,6 +43,23 @@ int main(int argc, char **argv) {
                 printf("There are wrong tests.\n");
             printf("########################################\n");
             printf("############# Ending STACK #############\n");
+            printf("########################################\n");
+            printf("\n");
+        }
+
+        if(argc < 2 || checkArg(argv, argc, "tools") == 1) {
+            printf("########################################\n");
+            printf("############ Starting TOOLS ############\n");
+            printf("########################################\n");
+            int successful_tests = 1;
+            test_get_missing_nodes(&successful_tests);
+
+            if(successful_tests == 1)
+                printf("All tools tests end successfully.\n");
+            else
+                printf("There are wrong tests.\n");
+            printf("########################################\n");
+            printf("############# Ending TOOLS #############\n");
             printf("########################################\n");
             printf("\n");
         }

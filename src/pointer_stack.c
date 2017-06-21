@@ -11,10 +11,10 @@ PointerStack* stack_init(PointerStack* stack) {
     stack->top = NULL;
 }
 
-void stack_push(PointerStack* stack, int** array_pointer, int* pointer_size) {
+void stack_push(PointerStack* stack, int** array_pointer, int pointer_size) {
     PointerStackNode *node = (PointerStackNode *) malloc(sizeof(PointerStackNode));
     node->data = *array_pointer;
-    node->size = *pointer_size;
+    node->size = pointer_size;
     node->lower = stack->top;
     stack->top = node;
     stack->size++;
