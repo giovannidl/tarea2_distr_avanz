@@ -10,7 +10,7 @@
 int main(int argc, char **argv) {
     int num_procs, my_id, i;
     int graph_size, graph_costs_length, best_cost;
-    int* serialized_graph_costs;
+    int *serialized_graph_costs, *best_road;
     int root_process = 0;
 
     PointerStack pending_stack;
@@ -48,7 +48,8 @@ int main(int argc, char **argv) {
             serialized_graph_costs = (int*) malloc(sizeof(int) * graph_costs_length);
         MPI_Barrier(MPI_COMM_WORLD);
 
-        MPI_Bcast(serialized_graph_costs, graph_costs_length, MPI_INT, root_process, MPI_COMM_WORLD);
+        MPI_Bcast(serialized_graph_costs, graph_costs_length, MPI_INT, root_process,
+                  MPI_COMM_WORLD);
     }
 
     // Create the matrix costs to get simples query
@@ -60,21 +61,77 @@ int main(int argc, char **argv) {
 
     // Assign a high value to best_cost
     best_cost = 5000000;
+    best_road = NULL;
 
     if(my_id == root_process) {
         // Initialize the stack with the started node zero
         int* start_node = (int*) malloc(sizeof(int));
+        start_node[0] = 0;
         stack_init(&pending_stack);
         stack_push(&pending_stack, &start_node, 1);
     }
 
     if(num_procs == 1) {
-        int* current_road;
-        int current_road_size;
+        int *current_road, *missing_nodes, *new_road;
+        int current_road_size, missing_nodes_size, partial_cost, current_cost;
         while(pending_stack.size > 0) {
             stack_pop(&pending_stack, &current_road, &current_road_size);
+            // Get the current cost for the current opened nodes.
+            current_cost = 0;
+            for(i = 0; i < current_road_size - 1; i++) {
+                current_cost += costs_matrix[current_road[i]][current_road[i + 1]];
+            }
+            // Get the missing nodes
+            missing_nodes_size = graph_size - current_road_size;
+            missing_nodes = get_missing_nodes(current_road, current_road_size, graph_size);
+            for(i = 0; i < missing_nodes_size; i++) {
+                partial_cost = current_cost;
+                partial_cost +=
+                        costs_matrix[current_road[current_road_size - 1]][missing_nodes[i]];
+                // Only keep working with the road if the partial_cost is lower than the
+                // current best cost.
+                if(partial_cost < best_cost) {
+                    // First create the new road.
+                    new_road = (int*) malloc(sizeof(int) * (current_road_size + 1));
+                    int j;
+                    for(j = 0; j < current_road_size; j++)
+                        new_road[j] = current_road[j];
+                    new_road[current_road_size] = missing_nodes[i];
 
+                    // Check if the node is a leaf. If it is, update the best cost and
+                    // best road. If not, add the new road to pending_stack.
+                    if(current_road_size == (graph_size - 1)) {
+                        best_cost = partial_cost;
+                        free(best_road);
+                        best_road = new_road;
+                    }
+                    else {
+                        stack_push(&pending_stack, &new_road, current_road_size + 1);
+                    }
+                }
+            }
+
+            // Release the memory
+            free(missing_nodes);
+            free(current_road);
         }
+    }
+
+    if(best_road != NULL) {
+        printf("The best road has been found.\n");
+        printf("Best cost: %i.\n", best_cost);
+        printf("Best road:");
+        for(i = 0; i < graph_size; i++){
+            printf(" %i", best_road[i]);
+        }
+        printf(".\n");
+    }
+    else {
+        printf("The best road has not been found.\n");
+    }
+
+    if(my_id == root_process) {
+        free(best_road);
     }
 
     MPI_Finalize();
