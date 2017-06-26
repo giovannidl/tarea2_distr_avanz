@@ -121,3 +121,5 @@ fabric.properties
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/c,jetbrains
+
+grima_hostfile

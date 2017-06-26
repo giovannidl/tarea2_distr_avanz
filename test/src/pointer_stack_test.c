@@ -27,6 +27,7 @@ void test_push_pointer(int* successful_tests) {
     printf("###### Test push one pointer ######\n");
     PointerStack stack;
     int example_size;
+    int example_cost;
     int* example;
 
     stack_init(&stack);
@@ -35,8 +36,9 @@ void test_push_pointer(int* successful_tests) {
     example[0] = 4;
     example[1] = 5;
     example[2] = 6;
+    example_cost = 15;
 
-    stack_push(&stack, &example, example_size);
+    stack_push(&stack, &example, example_size, example_cost);
 
     printIntValidate("Stack Size: %i.", stack.size, 1, successful_tests);
     if(stack.top == NULL) {
@@ -45,7 +47,10 @@ void test_push_pointer(int* successful_tests) {
     }
     else {
         printf("Stack top is not null. Correct\n");
-        printIntValidate("Stack top size: %i.", stack.top->size, 3, successful_tests);
+        printIntValidate("Stack top size: %i.", stack.top->size, example_size,
+                         successful_tests);
+        printIntValidate("Stack top cost: %i.", stack.top->cost, example_cost,
+                         successful_tests);
     }
 
     if(stack.top->data == example)
@@ -69,7 +74,7 @@ void test_push_pointer(int* successful_tests) {
 void test_peek_stack(int* successful_tests) {
     printf("###### Test peek a stack with one pointer ######\n");
     PointerStack stack;
-    int example_size, result_size;
+    int example_size, result_size, example_cost, result_cost;
     int *example, *pop_result;
 
     stack_init(&stack);
@@ -78,9 +83,10 @@ void test_peek_stack(int* successful_tests) {
     example[0] = 4;
     example[1] = 5;
     example[2] = 6;
+    example_cost = 15;
 
-    stack_push(&stack, &example, example_size);
-    stack_peek(&stack, &pop_result, &result_size);
+    stack_push(&stack, &example, example_size, example_cost);
+    stack_peek(&stack, &pop_result, &result_size, &result_cost);
 
     if(pop_result == example)
         printf("PopResult is the same as the example. Correct\n");
@@ -89,7 +95,10 @@ void test_peek_stack(int* successful_tests) {
         *successful_tests = 0;
     }
 
-    printIntValidate("Size of pop_result: %i.", result_size, example_size, successful_tests);
+    printIntValidate("Size of peek_result: %i.", result_size, example_size,
+                     successful_tests);
+    printIntValidate("Cost of peek_result: %i.", result_cost, example_cost,
+                     successful_tests);
     printIntValidate("Size of stack: %i.", stack.size, 1, successful_tests);
 
     if(stack.top == NULL) {
@@ -116,7 +125,7 @@ void test_peek_stack(int* successful_tests) {
 void test_push_two_pointers(int* successful_tests) {
     printf("###### Test push two pointers ######\n");
     PointerStack stack;
-    int example_size, second_example_size;
+    int example_size, second_example_size, example_cost, second_example_cost;
     int *example, *second_example;
 
     stack_init(&stack);
@@ -125,6 +134,7 @@ void test_push_two_pointers(int* successful_tests) {
     example[0] = 4;
     example[1] = 5;
     example[2] = 6;
+    example_cost = 15;
 
     second_example_size = 4;
     second_example = (int*) malloc(sizeof(int) * second_example_size);
@@ -132,9 +142,10 @@ void test_push_two_pointers(int* successful_tests) {
     second_example[1] = 12;
     second_example[2] = 13;
     second_example[3] = 14;
+    second_example_cost = 50;
 
-    stack_push(&stack, &example, example_size);
-    stack_push(&stack, &second_example, second_example_size);
+    stack_push(&stack, &example, example_size, example_cost);
+    stack_push(&stack, &second_example, second_example_size, second_example_cost);
 
     printIntValidate("Stack Size: %i.", stack.size, 2, successful_tests);
     if(stack.top == NULL) {
@@ -143,7 +154,10 @@ void test_push_two_pointers(int* successful_tests) {
     }
     else {
         printf("Stack top is not null. Correct\n");
-        printIntValidate("Stack top size: %i.", stack.top->size, 4, successful_tests);
+        printIntValidate("Stack top size: %i.", stack.top->size, second_example_size,
+                         successful_tests);
+        printIntValidate("Stack top cost: %i.", stack.top->cost, second_example_cost,
+                         successful_tests);
     }
 
     if(stack.top->data == second_example)
@@ -176,7 +190,7 @@ void test_push_two_pointers(int* successful_tests) {
 void test_push_and_pop(int* successful_tests) {
     printf("###### Test push and pop one pointer ######\n");
     PointerStack stack;
-    int example_size, result_size;
+    int example_size, result_size, example_cost, result_cost;
     int *example, *pop_result;
 
     stack_init(&stack);
@@ -185,9 +199,10 @@ void test_push_and_pop(int* successful_tests) {
     example[0] = 4;
     example[1] = 5;
     example[2] = 6;
+    example_cost = 15;
 
-    stack_push(&stack, &example, example_size);
-    stack_pop(&stack, &pop_result, &result_size);
+    stack_push(&stack, &example, example_size, example_cost);
+    stack_pop(&stack, &pop_result, &result_size, &result_cost);
 
     if(pop_result == example)
         printf("PopResult is the same as the example. Correct\n");
@@ -196,7 +211,10 @@ void test_push_and_pop(int* successful_tests) {
         *successful_tests = 0;
     }
 
-    printIntValidate("Size of pop_result: %i.", result_size, example_size, successful_tests);
+    printIntValidate("Size of pop_result: %i.", result_size, example_size,
+                     successful_tests);
+    printIntValidate("Cost of pop_result: %i.", result_cost, example_cost,
+                     successful_tests);
     printIntValidate("Size of stack: %i.", stack.size, 0, successful_tests);
 
     if(stack.top == NULL)
@@ -215,7 +233,8 @@ void test_push_and_pop(int* successful_tests) {
 void test_push_and_pop_twice(int* successful_tests) {
     printf("###### Test push two pointers and then pop twice ######\n");
     PointerStack stack;
-    int example_size, second_example_size, result_size, second_result_size;
+    int example_size, second_example_size, result_size, second_result_size,
+            example_cost, second_example_cost, result_cost, second_result_cost;
     int *example, *second_example, *pop_result, *pop_second_result;
 
     stack_init(&stack);
@@ -224,6 +243,7 @@ void test_push_and_pop_twice(int* successful_tests) {
     example[0] = 4;
     example[1] = 5;
     example[2] = 6;
+    example_cost = 15;
 
     second_example_size = 4;
     second_example = (int*) malloc(sizeof(int) * second_example_size);
@@ -231,11 +251,12 @@ void test_push_and_pop_twice(int* successful_tests) {
     second_example[1] = 12;
     second_example[2] = 13;
     second_example[3] = 14;
+    second_example_cost = 50;
 
-    stack_push(&stack, &example, example_size);
-    stack_push(&stack, &second_example, second_example_size);
-    stack_pop(&stack, &pop_result, &result_size);
-    stack_pop(&stack, &pop_second_result, &second_result_size);
+    stack_push(&stack, &example, example_size, example_cost);
+    stack_push(&stack, &second_example, second_example_size, second_example_cost);
+    stack_pop(&stack, &pop_result, &result_size, &result_cost);
+    stack_pop(&stack, &pop_second_result, &second_result_size, &second_result_cost);
 
     if(pop_result == second_example)
         printf("PopResult is the same as the second_example. Correct\n");
@@ -245,6 +266,8 @@ void test_push_and_pop_twice(int* successful_tests) {
     }
     printIntValidate("Size of pop_result: %i.", result_size, second_example_size,
                      successful_tests);
+    printIntValidate("Cost of pop_result: %i.", result_cost, second_example_cost,
+                     successful_tests);
 
     if(pop_second_result == example)
         printf("PopSecondResult is the same as the example. Correct\n");
@@ -253,6 +276,8 @@ void test_push_and_pop_twice(int* successful_tests) {
         *successful_tests = 0;
     }
     printIntValidate("Size of pop_second_result: %i.", second_result_size, example_size,
+                     successful_tests);
+    printIntValidate("Cost of pop_second_result: %i.", second_result_cost, example_cost,
                      successful_tests);
 
     printIntValidate("Size of stack: %i.", stack.size, 0, successful_tests);
@@ -278,7 +303,8 @@ void test_alter_push_and_pop(int* successful_tests) {
     printf("###### Test alter between push and pops ######\n");
     PointerStack stack;
     int example_size, second_example_size, third_example_size, result_size,
-            second_result_size, third_result_size;
+            second_result_size, third_result_size, example_cost, second_example_cost,
+            third_example_cost, result_cost, second_result_cost, third_result_cost;
     int *example, *second_example, *third_example, *pop_result, *pop_second_result,
             *pop_third_result;
 
@@ -288,6 +314,7 @@ void test_alter_push_and_pop(int* successful_tests) {
     example[0] = 4;
     example[1] = 5;
     example[2] = 6;
+    example_cost = 15;
 
     second_example_size = 4;
     second_example = (int*) malloc(sizeof(int) * second_example_size);
@@ -295,18 +322,20 @@ void test_alter_push_and_pop(int* successful_tests) {
     second_example[1] = 12;
     second_example[2] = 13;
     second_example[3] = 14;
+    second_example_cost = 50;
 
     third_example_size = 2;
     third_example = (int*) malloc(sizeof(int) * third_example_size);
     third_example[0] = 21;
     third_example[1] = 22;
+    third_example_cost = 43;
 
-    stack_push(&stack, &example, example_size);
-    stack_push(&stack, &second_example, second_example_size);
-    stack_pop(&stack, &pop_result, &result_size);
-    stack_push(&stack, &third_example, third_example_size);
-    stack_pop(&stack, &pop_second_result, &second_result_size);
-    stack_pop(&stack, &pop_third_result, &third_result_size);
+    stack_push(&stack, &example, example_size, example_cost);
+    stack_push(&stack, &second_example, second_example_size, second_example_cost);
+    stack_pop(&stack, &pop_result, &result_size, &result_cost);
+    stack_push(&stack, &third_example, third_example_size, third_example_cost);
+    stack_pop(&stack, &pop_second_result, &second_result_size, &second_result_cost);
+    stack_pop(&stack, &pop_third_result, &third_result_size, &third_result_cost);
 
     if(pop_result == second_example)
         printf("PopResult is the same as the second_example. Correct\n");
@@ -315,6 +344,8 @@ void test_alter_push_and_pop(int* successful_tests) {
         *successful_tests = 0;
     }
     printIntValidate("Size of pop_result: %i.", result_size, second_example_size,
+                     successful_tests);
+    printIntValidate("Cost of pop_result: %i.", result_cost, second_example_cost,
                      successful_tests);
 
     if(pop_second_result == third_example)
@@ -325,6 +356,8 @@ void test_alter_push_and_pop(int* successful_tests) {
     }
     printIntValidate("Size of pop_second_result: %i.", second_result_size,
                      third_example_size, successful_tests);
+    printIntValidate("Cost of pop_second_result: %i.", second_result_cost,
+                     third_example_cost, successful_tests);
 
     if(pop_third_result == example)
         printf("PopThirdResult is the same as the example. Correct\n");
@@ -333,6 +366,8 @@ void test_alter_push_and_pop(int* successful_tests) {
         *successful_tests = 0;
     }
     printIntValidate("Size of pop_third_result: %i.", third_result_size, example_size,
+                     successful_tests);
+    printIntValidate("Cost of pop_third_result: %i.", third_result_cost, example_cost,
                      successful_tests);
 
     printIntValidate("Size of stack: %i.", stack.size, 0, successful_tests);
@@ -361,7 +396,7 @@ void test_alter_push_and_pop(int* successful_tests) {
 void test_clear_stack(int* successful_tests) {
     printf("###### Test clear an unempty stack ######\n");
     PointerStack stack;
-    int example_size, second_example_size;
+    int example_size, second_example_size, example_cost, second_example_cost;
     int *example, *second_example;
 
     stack_init(&stack);
@@ -370,6 +405,7 @@ void test_clear_stack(int* successful_tests) {
     example[0] = 4;
     example[1] = 5;
     example[2] = 6;
+    example_cost = 15;
 
     second_example_size = 4;
     second_example = (int*) malloc(sizeof(int) * second_example_size);
@@ -377,9 +413,10 @@ void test_clear_stack(int* successful_tests) {
     second_example[1] = 12;
     second_example[2] = 13;
     second_example[3] = 14;
+    second_example_cost = 50;
 
-    stack_push(&stack, &example, example_size);
-    stack_push(&stack, &second_example, second_example_size);
+    stack_push(&stack, &example, example_size, example_cost);
+    stack_push(&stack, &second_example, second_example_size, second_example_cost);
     stack_clear(&stack);
 
     printIntValidate("Size of stack: %i.", stack.size, 0, successful_tests);
